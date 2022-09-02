@@ -38,7 +38,7 @@ PROJECT_NAME           = strutil
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 1.0.1
+PROJECT_NUMBER         = 1.1.0
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -799,7 +799,7 @@ INPUT                  = .
 # possible encodings.
 # The default value is: UTF-8.
 
-INPUT_ENCODING         = CP1250
+INPUT_ENCODING         = UTF-8
 
 # If the value of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard patterns (like *.cpp and
