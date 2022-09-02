@@ -69,9 +69,8 @@ namespace strutil
     static inline std::string to_lower(const std::string & str)
     {
         auto result = str;
-        std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) -> unsigned char
-        {
-            return static_cast<unsigned char>(std::tolower(c));
+        std::transform(result.begin(), result.end(), result.begin(), [](char c) {
+            return static_cast<char>(std::tolower(c));
         });
 
         return result;
@@ -85,9 +84,8 @@ namespace strutil
     static inline std::string to_upper(const std::string & str)
     {
         auto result = str;
-        std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) -> unsigned char
-        {
-            return static_cast<unsigned char>(std::toupper(c));
+        std::transform(result.begin(), result.end(), result.begin(), [](char c) {
+            return static_cast<char>(std::toupper(c));
         });
 
         return result;
@@ -101,7 +99,10 @@ namespace strutil
     static inline std::string capitalize(const std::string & str)
     {
         auto result = str;
-        result[0] = std::toupper(result[0]);
+        if (!result.empty())
+        {
+            result.front() = static_cast<char>(std::toupper(result.front()));
+        }
 
         return result;
     }
@@ -114,31 +115,34 @@ namespace strutil
     static inline std::string capitalize_first_char(const std::string & str)
     {
         auto result = to_lower(str);
-        result[0] = std::toupper(result[0]);
+        if (!result.empty())
+        {
+            result.front() = static_cast<char>(std::toupper(result.front()));
+        }
 
         return result;
     }
 
     /**
-     * @brief Checks if input std::string str contains specified substring.
-     * @param str - std::string to be checked.
+     * @brief Checks if input string contains specified substring.
+     * @param str - std::string_view to be checked.
      * @param substring - searched substring.
      * @return True if substring was found in str, false otherwise.
      */
-    static inline bool contains(const std::string & str, const std::string & substring)
+    static inline bool contains(std::string_view str, const std::string & substring)
     {
         return str.find(substring) != std::string::npos;
     }
 
     /**
-     * @brief Checks if input std::string str contains specified character.
+     * @brief Checks if input std::string_view str contains specified character.
      * @param str - std::string to be checked.
      * @param character - searched character.
      * @return True if character was found in str, false otherwise.
      */
-    static inline bool contains(const std::string & str, const char character)
+    static inline bool contains(std::string_view str, const char character)
     {
-        return contains(str, std::string(1,character));
+        return str.find(character) != std::string::npos;
     }
 
     /**
@@ -287,12 +291,12 @@ namespace strutil
     }
 
     /**
-     * @brief Checks if std::string str ends with specified suffix.
-     * @param str - input std::string that will be checked.
+     * @brief Checks if std::string_view str ends with specified suffix.
+     * @param str - input std::string_view that will be checked.
      * @param suffix - searched suffix in str.
      * @return True if suffix was found, false otherwise.
      */
-    static inline bool ends_with(const std::string & str, const std::string & suffix)
+    static inline bool ends_with(std::string_view str, const std::string & suffix)
     {
         const auto suffix_start = str.size() - suffix.size();
         const auto result = str.find(suffix, suffix_start);
@@ -300,34 +304,34 @@ namespace strutil
     }
 
     /**
-     * @brief Checks if std::string str ends with specified character.
-     * @param str - input std::string that will be checked.
+     * @brief Checks if std::string_view str ends with specified character.
+     * @param str - input std::string_view that will be checked.
      * @param suffix - searched character in str.
      * @return True if ends with character, false otherwise.
      */
-    static inline bool ends_with(const std::string & str, const char suffix)
+    static inline bool ends_with(std::string_view str, const char suffix)
     {
         return !str.empty() && (str.back() == suffix);
     }
 
     /**
-     * @brief Checks if std::string str starts with specified prefix.
-     * @param str - input std::string that will be checked.
+     * @brief Checks if std::string_view str starts with specified prefix.
+     * @param str - input std::string_view that will be checked.
      * @param prefix - searched prefix in str.
      * @return True if prefix was found, false otherwise.
      */
-    static inline bool starts_with(const std::string & str, const std::string & prefix)
+    static inline bool starts_with(std::string_view str, std::string_view prefix)
     {
         return str.rfind(prefix, 0) == 0;
     }
 
     /**
-     * @brief Checks if std::string str starts with specified character.
-     * @param str - input std::string that will be checked.
+     * @brief Checks if std::string_view str starts with specified character.
+     * @param str - input std::string_view that will be checked.
      * @param prefix - searched character in str.
      * @return True if starts with character, false otherwise.
      */
-    static inline bool starts_with(const std::string & str, const char prefix)
+    static inline bool starts_with(std::string_view str, const char prefix)
     {
         return !str.empty() && (str.front() == prefix);
     }
