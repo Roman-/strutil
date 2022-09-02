@@ -25,6 +25,7 @@ TEST(Compare, starts_with_str)
     EXPECT_EQ(true, strutil::starts_with("m_DiffuseTexture", "m_"));
     EXPECT_EQ(true, strutil::starts_with("This is a simple test case", "This "));
     EXPECT_EQ(true, strutil::starts_with("This is a simple test case", "This is a simple test case"));
+    EXPECT_EQ(true, strutil::starts_with("This is a simple test case", ""));
     EXPECT_EQ(true, strutil::starts_with("", ""));
 
     EXPECT_EQ(false, strutil::starts_with("p_DiffuseTexture", "m_"));
@@ -51,6 +52,7 @@ TEST(Compare, ends_with_str)
     EXPECT_EQ(true, strutil::ends_with("DiffuseTexture_m", "_m"));
     EXPECT_EQ(true, strutil::ends_with("This is a simple test case", " test case"));
     EXPECT_EQ(true, strutil::ends_with("This is a simple test case", "This is a simple test case"));
+    EXPECT_EQ(true, strutil::ends_with("This is a simple test case", ""));
     EXPECT_EQ(true, strutil::ends_with("", ""));
 
     EXPECT_EQ(false, strutil::ends_with("DiffuseTexture_p", "_m"));
