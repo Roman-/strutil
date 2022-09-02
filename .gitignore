@@ -1,11 +1,14 @@
+# build
 [Bb]uild/
+cmake-build-*/
 
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
+# idea
+.idea
+.ccls-cache
+
+# tmp files
+*~
+
+# vim
+[._]*.sw[a-p]
+tags
