@@ -11,7 +11,6 @@
  *  @subsection Thank you for your contributions:
  *              - SomeRandomDev49
  *              - flying-tiger
- * 
  *
  ******************************************************************************
  */
@@ -129,7 +128,7 @@ namespace strutil
      * @param substring - searched substring.
      * @return True if substring was found in str, false otherwise.
      */
-    static inline bool contains(std::string_view str, const std::string & substring)
+    static inline bool contains(std::string_view str, std::string_view substring)
     {
         return str.find(substring) != std::string::npos;
     }
@@ -229,7 +228,7 @@ namespace strutil
      * @param str - input std::string that will be modified.
      * @param target - substring that will be replaced with replacement.
      * @param replecament - substring that will replace target.
-     * @return True if replacement was successfull, false otherwise.
+     * @return True if replacement was successful, false otherwise.
      */
     static inline bool replace_first(std::string & str, const std::string & target, const std::string & replecament)
     {
@@ -249,7 +248,7 @@ namespace strutil
      * @param str - input std::string that will be modified.
      * @param target - substring that will be replaced with replacement.
      * @param replecament - substring that will replace target.
-     * @return True if replacement was successfull, false otherwise.
+     * @return True if replacement was successful, false otherwise.
      */
     static inline bool replace_last(std::string & str, const std::string & target, const std::string & replecament)
     {
@@ -268,12 +267,12 @@ namespace strutil
      *        Taken from: http://stackoverflow.com/questions/3418231/c-replace-part-of-a-string-with-another-string.
      * @param str - input std::string that will be modified.
      * @param target - substring that will be replaced with replacement.
-     * @param replecament - substring that will replace target.
-     * @return True if replacement was successfull, false otherwise.
+     * @param replacement - substring that will replace target.
+     * @return True if replacement was successful, false otherwise.
      */
-    static inline bool replace_all(std::string & str, const std::string & target, const std::string & replecament)
+    static inline bool replace_all(std::string & str, const std::string & target, const std::string & replacement)
     {
-        if (target.empty())
+        if (str.empty() || target.empty())
         {
             return false;
         }
@@ -283,8 +282,8 @@ namespace strutil
 
         while ((start_pos = str.find(target, start_pos)) != std::string::npos)
         {
-            str.replace(start_pos, target.length(), replecament);
-            start_pos += replecament.length();
+            str.replace(start_pos, target.length(), replacement);
+            start_pos += replacement.length();
         }
 
         return found_substring;
@@ -350,7 +349,7 @@ namespace strutil
         std::string token;
         while(std::getline(ss, token, delim))
         {
-            tokens.push_back(token);
+            tokens.emplace_back(std::move(token));
         }
 
         // Match semantics of split(str,str)
@@ -378,10 +377,10 @@ namespace strutil
         {
             token = str.substr(pos_start, pos_end - pos_start);
             pos_start = pos_end + delim_len;
-            tokens.push_back(token);
+            tokens.emplace_back(std::move(token));
         }
 
-        tokens.push_back(str.substr(pos_start));
+        tokens.emplace_back(str.substr(pos_start));
         return tokens;
     }
 
