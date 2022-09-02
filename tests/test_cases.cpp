@@ -502,39 +502,43 @@ TEST(TestDropDuplicateCopy, drop_duplicate_copy)
 TEST(TextManip, to_lower)
 {
     EXPECT_EQ("hello strutil", strutil::to_lower("HeLlo StRUTIL"));
+    EXPECT_EQ("", strutil::to_lower(""));
 }
 
 TEST(TextManip, to_upper)
 {
     EXPECT_EQ("HELLO STRUTIL", strutil::to_upper("HeLlo StRUTIL"));
+    EXPECT_EQ("", strutil::to_upper(""));
 }
 
 TEST(TextManip, capitalize)
 {
     EXPECT_EQ("HeLlo StRUTIL", strutil::capitalize("heLlo StRUTIL"));
     EXPECT_EQ("+ is an operator.", strutil::capitalize("+ is an operator."));
+    EXPECT_EQ("", strutil::capitalize(""));
 }
 
 TEST(TextManip, capitalize_first_char)
 {
     EXPECT_EQ("Hello strutil", strutil::capitalize_first_char("HeLlo StRUTIL"));
     EXPECT_EQ("+ is an operator.", strutil::capitalize_first_char("+ is an operator."));
+    EXPECT_EQ("", strutil::capitalize_first_char(""));
 }
 
 TEST(TextManip, trim_left_in_place)
 {
-    std::string test = "   HeLlo StRUTIL";
+    std::string test = "   HeLlo StRUTIL ";
     strutil::trim_left(test);
 
-    EXPECT_EQ("HeLlo StRUTIL", test);
+    EXPECT_EQ("HeLlo StRUTIL ", test);
 }
 
 TEST(TextManip, trim_right_in_place)
 {
-    std::string test = "HeLlo StRUTIL    ";
+    std::string test = " HeLlo StRUTIL    ";
     strutil::trim_right(test);
 
-    EXPECT_EQ("HeLlo StRUTIL", test);
+    EXPECT_EQ(" HeLlo StRUTIL", test);
 }
 
 TEST(TextManip, trim_both_in_place)
