@@ -385,12 +385,30 @@ namespace strutil
     }
 
     /**
+     * @brief Splits input string into lines separated by "\n" or "\r\n".
+     * @param str - std::string that will be split.
+     * @return std::vector<std::string> that contains all splitted tokens.
+     */
+    static inline std::vector<std::string> split_lines(const std::string & str) {
+        std::vector<std::string> tokens = split(str, '\n');
+        for (auto& token : tokens)
+        {
+            if (!token.empty() && token.back() == '\r')
+            {
+                token.pop_back();
+            }
+        }
+
+        return tokens;
+    }
+
+    /**
      * @brief Splits input string using regex as a delimiter.
      * @param src - std::string that will be split.
      * @param rgx_str - the set of delimiter characters.
      * @return vector of resulting tokens.
      */
-    static inline std::vector<std::string> regex_split(const std::string& src, std::string rgx_str)
+    static inline std::vector<std::string> regex_split(const std::string& src, const std::string& rgx_str)
     {
         std::vector<std::string> elems;
         std::regex rgx(rgx_str);

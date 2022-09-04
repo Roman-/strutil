@@ -342,6 +342,20 @@ TEST(Splitting, split_string_delim)
     }
 }
 
+TEST(Splitting, split_lines) {
+    const std::vector<std::pair<std::string, std::vector<std::string>>> test_cases = {
+            {"abc\ndef\nghi", {"abc", "def", "ghi"}},
+            {"abc\r\ndef\nghi", {"abc", "def", "ghi"}},
+            {"abc\rdef\nghi", {"abc\rdef", "ghi"}},
+            {"\r\nabc\n\r\ndef\nghi\n", {"", "abc", "", "def", "ghi", ""}},
+            {"", {""}},
+    };
+    for (const auto& t : test_cases) {
+        auto result = strutil::split_lines(t.first);
+        EXPECT_EQ(result, t.second) << t.first;
+    }
+}
+
 TEST(Splitting, split_any)
 {
     std::vector<std::string> res;
