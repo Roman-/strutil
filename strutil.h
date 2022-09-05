@@ -387,7 +387,7 @@ namespace strutil
     /**
      * @brief Splits input string into lines separated by "\n" or "\r\n".
      * @param str - std::string that will be split.
-     * @return std::vector<std::string> that contains all splitted tokens.
+     * @return std::vector<std::string> that contains the lines.
      */
     static inline std::vector<std::string> split_lines(const std::string & str) {
         std::vector<std::string> tokens = split(str, '\n');
@@ -397,6 +397,47 @@ namespace strutil
             {
                 token.pop_back();
             }
+        }
+
+        return tokens;
+    }
+
+    /**
+     * @brief Splits input string into lines separated by "\n" or "\r\n", trims them and removes empty lines.
+     * @param str - std::string that will be split.
+     * @return std::vector<std::string> that contains trimmed non-empty lines.
+     */
+    static inline std::vector<std::string> split_lines_clean(const std::string & str) {
+        std::vector<std::string> tokens;
+        std::stringstream ss(str);
+
+        std::string token;
+        while(std::getline(ss, token))
+        {
+            std::cout << "before trimming \"" << token << "\"" << std::endl;
+            trim(token);
+            std::cout << "after trimming \"" << token << "\"" << std::endl;
+            if (!token.empty()) {
+                tokens.emplace_back(std::move(token));
+            }
+        }
+
+        return tokens;
+    }
+
+    /**
+     * @brief Splits input string by whitespace(s) into non-empty substrings.
+     * @param str - std::string that will be split.
+     * @return std::vector<std::string> that contains all splitted tokens.
+     */
+    static inline std::vector<std::string> split_words(const std::string & str) {
+        std::vector<std::string> tokens;
+        std::stringstream ss(str);
+
+        std::string token;
+        while(ss >> token)
+        {
+            tokens.emplace_back(std::move(token));
         }
 
         return tokens;

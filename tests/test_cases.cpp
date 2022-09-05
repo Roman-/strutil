@@ -344,17 +344,49 @@ TEST(Splitting, split_string_delim)
 
 TEST(Splitting, split_lines) {
     const std::vector<std::pair<std::string, std::vector<std::string>>> test_cases = {
-            {"abc\ndef\nghi", {"abc", "def", "ghi"}},
-            {"abc\r\ndef\nghi", {"abc", "def", "ghi"}},
-            {"abc\rdef\nghi", {"abc\rdef", "ghi"}},
-            {"\r\nabc\n\r\ndef\nghi\n", {"", "abc", "", "def", "ghi", ""}},
+            {"1abc\ndef\nghi", {"1abc", "def", "ghi"}},
+            {"2abc\r\ndef\t\nghi", {"2abc", "def\t", "ghi"}},
+            {"3abc\rde f\nghi", {"3abc\rde f", "ghi"}},
+            {"\r\n4abc\n\r\ndef\nghi\n", {"", "4abc", "", "def", "ghi", ""}},
+            {"\n", {"", ""}}, // exactly two
             {"", {""}},
     };
-    for (const auto& t : test_cases) {
+    for (const auto& t : test_cases)
+    {
         auto result = strutil::split_lines(t.first);
         EXPECT_EQ(result, t.second) << t.first;
     }
 }
+
+TEST(Splitting, split_lines_clean) {
+    const std::vector<std::pair<std::string, std::vector<std::string>>> test_cases = {
+            {"1abc\ndef\nghi", {"1abc", "def", "ghi"}},
+            {"2abc\r\ndef\n ghi", {"2abc", "def", "ghi"}},
+            {"  \r\n  3abc\t\r\n\tdef ghi", {"3abc", "def ghi"}},
+            {"\r\n\t\n\t", {}}, // no non-empty lines
+            {"", {}}, // no non-empty lines
+    };
+    for (const auto& t : test_cases)
+    {
+        auto result = strutil::split_lines_clean(t.first);
+        EXPECT_EQ(result, t.second) << t.first;
+    }
+}
+
+TEST(Splitting, split_words) {
+    const std::vector<std::pair<std::string, std::vector<std::string>>> test_cases = {
+            {"1abc", {"1abc"}},
+            {" 2abc def  ghi   j", {"2abc", "def", "ghi", "j"}},
+            {"\r\n\r\n   3abc def\tghi\r\n\r\n", {"3abc", "def", "ghi"}},
+            {" 4abc\r\n def   ghi\rj\n", {"4abc", "def", "ghi", "j"}},
+            {"", {}}, // no words -> empty array
+    };
+    for (const auto& t : test_cases) {
+        auto result = strutil::split_words(t.first);
+        EXPECT_EQ(result, t.second) << t.first;
+    }
+}
+
 
 TEST(Splitting, split_any)
 {
