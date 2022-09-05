@@ -152,7 +152,11 @@ namespace strutil
      */
     static inline bool compare_ignore_case(const std::string & str1, const std::string & str2)
     {
-        return to_lower(str1) == to_lower(str2);
+        return str1.size() == str2.size()
+               && std::equal(str1.begin(),
+                             str1.end(),
+                             str2.begin(),
+                             [](char c1, char c2){return std::tolower(c1) == std::tolower(c2);});
     }
 
     /**
@@ -414,9 +418,7 @@ namespace strutil
         std::string token;
         while(std::getline(ss, token))
         {
-            std::cout << "before trimming \"" << token << "\"" << std::endl;
             trim(token);
-            std::cout << "after trimming \"" << token << "\"" << std::endl;
             if (!token.empty()) {
                 tokens.emplace_back(std::move(token));
             }

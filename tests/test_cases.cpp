@@ -11,6 +11,10 @@
 
 TEST(Compare, compare_ignore_case)
 {
+    EXPECT_EQ(true, strutil::compare_ignore_case("", ""));
+    EXPECT_EQ(false, strutil::compare_ignore_case("", "non-empty string"));
+    EXPECT_EQ(false, strutil::compare_ignore_case("c1", "c2"));
+
     std::string str1 = "PoKeMoN!";
     std::string str2 = "pokemon!";
     std::string str3 = "POKEMON";
