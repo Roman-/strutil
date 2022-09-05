@@ -3,7 +3,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "strutil.h"
+#include <include/strutil.h>
 
 /*
 * Comparison tests
