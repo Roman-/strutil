@@ -675,7 +675,7 @@ namespace strutil
      * @brief Generate string of given size consisting of random alphanumeric characters
      * @param size - number of chars in string
      */
-    std::string random_string(size_t size)
+    static inline std::string random_string(size_t size)
     {
         static const char symbols[] =
                 "0123456789"
@@ -691,7 +691,7 @@ namespace strutil
      * @brief generate string of random lowercase latin characters
      * @param size - number of chars in string
      */
-    std::string random_lowercase_string(size_t size)
+    static inline std::string random_lowercase_string(size_t size)
     {
         std::string result;
         result.reserve(size);
