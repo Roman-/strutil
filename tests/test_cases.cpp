@@ -726,3 +726,45 @@ TEST(TextReverseCopy, reverse_copy)
     EXPECT_EQ(std::equal(str1.cbegin(), str1.cend(), str3.cbegin()), true);
     EXPECT_EQ(std::equal(str4.cbegin(), str4.cend(), str2.cbegin()), true);
 }
+
+TEST(Random, random_lowercase_string)
+{
+    ASSERT_TRUE(strutil::random_lowercase_string(0).empty());
+
+    // generate a bunch of 20-char strings, ensure each of them is 20 characters long, unique and lowercase
+    const size_t num_strings{50};
+    const size_t string_size{20};
+    std::vector<std::string> strings;
+    std::generate_n(std::back_inserter(strings),
+                    num_strings,
+                    [&]() { return strutil::random_lowercase_string(string_size); });
+    for (const auto& s: strings) {
+        ASSERT_EQ(s.size(), string_size);
+        for (const char c : s) {
+            ASSERT_TRUE(std::islower(c));
+        }
+    }
+    std::sort(strings.begin(), strings.end()); // duplicate strings will be adjacent
+    ASSERT_EQ(strings.end(), std::adjacent_find(strings.begin(), strings.end(), std::equal_to<>()));
+}
+
+TEST(Random, random_string)
+{
+    ASSERT_TRUE(strutil::random_string(0).empty());
+
+    // generate a bunch of 20-char strings, ensure each of them is 20 characters long, unique and alphanumeric
+    const size_t num_strings{50};
+    const size_t string_size{20};
+    std::vector<std::string> strings;
+    std::generate_n(std::back_inserter(strings),
+                    num_strings,
+                    [&]() { return strutil::random_string(string_size); });
+    for (const auto& s: strings) {
+        ASSERT_EQ(s.size(), string_size);
+        for (const char c : s) {
+            ASSERT_TRUE(std::isalpha(c) || std::isdigit(c));
+        }
+    }
+    std::sort(strings.begin(), strings.end()); // duplicate strings will be adjacent
+    ASSERT_EQ(strings.end(), std::adjacent_find(strings.begin(), strings.end(), std::equal_to<>()));
+}

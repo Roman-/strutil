@@ -670,4 +670,33 @@ namespace strutil
         std::reverse(strs.begin(), strs.end());
         return strs;
     }
+
+    /**
+     * @brief Generate string of given size consisting of random alphanumeric characters
+     * @param size - number of chars in string
+     */
+    std::string random_string(size_t size)
+    {
+        static const char symbols[] =
+                "0123456789"
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "abcdefghijklmnopqrstuvwxyz";
+        std::string result;
+        result.reserve(size);
+        std::generate_n(std::back_inserter(result), size, []() { return symbols[rand() % (sizeof(symbols) - 1)]; });
+        return result;
+    }
+
+    /**
+     * @brief generate string of random lowercase latin characters
+     * @param size - number of chars in string
+     */
+    std::string random_lowercase_string(size_t size)
+    {
+        std::string result;
+        result.reserve(size);
+        std::generate_n(std::back_inserter(result), size, []() { return 'a' + char(rand() % ('z'-'a')); });
+        return result;
+    }
+
 }
