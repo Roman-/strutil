@@ -526,7 +526,7 @@ namespace strutil
      * @return std::string with joined elements of vector tokens with delimiter delim.
      */
     template<typename T>
-    static inline std::string join(const std::vector<T> & tokens, const std::string & delim)
+    static inline std::string join(const std::vector<T> & tokens, std::string_view delim)
     {
         std::ostringstream result;
         for(auto it = tokens.begin(); it != tokens.end(); ++it)
@@ -596,16 +596,16 @@ namespace strutil
      * @param n - number of iterations.
      * @return std::string with repeated substring str.
      */
-    static inline std::string repeat(const std::string & str, unsigned n)
+    static inline std::string repeat(std::string_view str, unsigned n)
     {
-        std::string result;
+        std::ostringstream ss;
 
         for(unsigned i = 0; i < n; ++i)
         {
-            result += str;
+            ss << str;
         }
 
-        return result;
+        return ss.str();
     }
 
     /**
