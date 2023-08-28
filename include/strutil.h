@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iomanip>
 
 //! The strutil namespace
 namespace strutil
@@ -688,7 +689,7 @@ namespace strutil
     }
 
     /**
-     * @brief generate string of random lowercase latin characters
+     * @brief generates string of random lowercase latin characters
      * @param size - number of chars in string
      */
     static inline std::string random_lowercase_string(size_t size)
@@ -696,6 +697,42 @@ namespace strutil
         std::string result;
         result.reserve(size);
         std::generate_n(std::back_inserter(result), size, []() { return 'a' + char(rand() % ('z'-'a')); });
+        return result;
+    }
+
+    /**
+     * @brief converts a byte array to its hexadecimal string representation.
+     * @param size - number of chars in string
+     */
+    static inline std::string to_hex_string(const uint8_t* data, size_t size, bool uppercase = true)
+    {
+        std::ostringstream oss;
+
+        // Set uppercase or lowercase based on the 'uppercase' flag
+        oss << (uppercase ? std::uppercase : std::nouppercase);
+        oss << std::hex << std::setfill('0');
+
+        for (size_t i = 0; i < size; ++i)
+        {
+            oss << std::setw(2) << static_cast<int>(data[i]);
+        }
+        return oss.str();
+    }
+
+    /**
+     * @brief converts a byte array to its binary string representation.
+     * @param size - number of chars in string
+     */
+    static inline std::string to_binary_string(const uint8_t* data, size_t size)
+    {
+        std::string result(size * 8, '0');
+        for (size_t i = 0; i < size; ++i)
+        {
+            for (int j = 7; j >= 0; --j)
+            {
+                result[i * 8 + (7 - j)] = (data[i] & (1 << j)) ? '1' : '0';
+            }
+        }
         return result;
     }
 

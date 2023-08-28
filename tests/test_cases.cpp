@@ -768,3 +768,28 @@ TEST(Random, random_string)
     std::sort(strings.begin(), strings.end()); // duplicate strings will be adjacent
     ASSERT_EQ(strings.end(), std::adjacent_find(strings.begin(), strings.end(), std::equal_to<>()));
 }
+
+TEST(BytesToString, to_hex_string)
+{
+    EXPECT_EQ(strutil::to_hex_string(nullptr, 0, true), "");
+    EXPECT_EQ(strutil::to_hex_string(nullptr, 0, false), "");
+
+    uint8_t test_data1[] = {0xAA, 0xBB}; // Hex: AABB
+    uint8_t test_data2[] = {0x01, 0xFF}; // Hex: 01FF
+
+    EXPECT_EQ(strutil::to_hex_string(test_data1, sizeof(test_data1), true), "AABB");
+    EXPECT_EQ(strutil::to_hex_string(test_data2, sizeof(test_data2), true), "01FF");
+
+    EXPECT_EQ(strutil::to_hex_string(test_data1, sizeof(test_data1), false), "aabb");
+    EXPECT_EQ(strutil::to_hex_string(test_data2, sizeof(test_data2), false), "01ff");
+}
+
+TEST(BytesToString, to_binary_string) {
+    EXPECT_EQ(strutil::to_binary_string(nullptr, 0), "");
+
+    uint8_t test_data1[] = {0b10101010, 0b10111011};
+    uint8_t test_data2[] = {0b00000001, 0b11111111};
+
+    EXPECT_EQ(strutil::to_binary_string(test_data1, sizeof(test_data1)), "1010101010111011");
+    EXPECT_EQ(strutil::to_binary_string(test_data2, sizeof(test_data2)), "0000000111111111");
+}
