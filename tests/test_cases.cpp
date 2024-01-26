@@ -482,7 +482,7 @@ TEST(Regexsplitting_map, regex_split_map)
     std::map<std::string, std::string> ans = {
         {"[abc]", "name = 123;"}, {"[abd]", "name = 123;"}, {"[abe]", "name = 123;"}
     };
-    for (auto each: res) {
+    for (const auto& each: res) {
         ASSERT_EQ(ans.count(each.first), 1);
         if (ans.count(each.first) == 1)
         {
@@ -495,18 +495,25 @@ TEST(Regexsplitting_map, regex_split_map)
     // TODO: More test is to be added.
 }
 
-TEST(Splitting, join)
+TEST(Splitting, join_vector)
 {
     std::string str1 = "Col1;Col2;Col3";
     std::vector<std::string> tokens1 = { "Col1", "Col2", "Col3" };
 
-    EXPECT_EQ(str1, strutil::join<std::string>(tokens1, ";"));
+    EXPECT_EQ(str1, strutil::join(tokens1, ";"));
 
     std::string str2 = "1|2|3";
     std::vector<unsigned> tokens2 = { 1, 2, 3 };
 
-    EXPECT_EQ(str2, strutil::join<unsigned>(tokens2, "|"));
+    EXPECT_EQ(str2, strutil::join(tokens2, "|"));
 }
+
+TEST(Splitting, join_set)
+{
+    std::set<unsigned> tokens2 = { 1, 2, 3, 42 };
+    EXPECT_EQ(strutil::join(tokens2, "|"), "1|2|3|42");
+}
+
 
 TEST(Splitting, drop_empty)
 {

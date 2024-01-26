@@ -521,13 +521,13 @@ namespace strutil
     /**
      * @brief Joins all elements of std::vector tokens of arbitrary datatypes
      *        into one std::string with delimiter delim.
-     * @tparam T - arbitrary datatype.
+     * @tparam Container - type of iterable container.
      * @param tokens - vector of tokens.
      * @param delim - the delimiter.
      * @return std::string with joined elements of vector tokens with delimiter delim.
      */
-    template<typename T>
-    static inline std::string join(const std::vector<T> & tokens, std::string_view delim)
+    template<typename Container>
+    static inline std::string join(const Container & tokens, std::string_view delim)
     {
         std::ostringstream result;
         for(auto it = tokens.begin(); it != tokens.end(); ++it)
