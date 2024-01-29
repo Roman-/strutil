@@ -722,3 +722,35 @@ TEST(BytesToString, to_binary_string) {
     EXPECT_EQ(strutil::to_binary_string(test_data1, sizeof(test_data1)), "1010101010111011");
     EXPECT_EQ(strutil::to_binary_string(test_data2, sizeof(test_data2)), "0000000111111111");
 }
+
+TEST(Checks, is_alphanumeric_positive) {
+    const std::vector<std::string> alphanumeric{
+        "",
+        "a",
+        "Z",
+        "0",
+        "9",
+        "ioshnaet",
+        "io9s8hnae8t0123456780"
+    };
+
+    for (const auto& s : alphanumeric) {
+        ASSERT_TRUE(strutil::is_alphanumeric(s)) << s;
+    }
+}
+
+TEST(Checks, is_alphanumeric_negative) {
+    const std::vector<std::string> non_alphanumeric{
+        "_",
+        "-",
+        "A!Z",
+        "0.",
+        "aaaaaa ",
+        " aaaaaa",
+        "..."
+    };
+
+    for (const auto& s : non_alphanumeric) {
+        ASSERT_FALSE(strutil::is_alphanumeric(s)) << s;
+    }
+}

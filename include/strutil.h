@@ -666,4 +666,11 @@ static inline std::string to_binary_string(const uint8_t* data, size_t size) {
     return result;
 }
 
+/**
+ * @returns true if string does not contain characters other than latin letters, both uppercase and lowercase, and digits
+ */
+static inline bool is_alphanumeric(const std::string& s) {
+    return std::all_of(s.begin(), s.end(), [](char c) { return bool(std::isalnum(c)); });
+}
+
 }
