@@ -474,7 +474,7 @@ static inline std::vector<std::string> split_any(const std::string& str, const s
  * @brief Joins all elements of std::vector tokens of arbitrary datatypes
  *        into one std::string with delimiter delim.
  * @tparam Container - type of iterable container.
- * @param tokens - vector of tokens.
+ * @param tokens - container of tokens. @note that int8_t and uint8_t are treated as int.
  * @param delim - the delimiter.
  * @return std::string with joined elements of vector tokens with delimiter delim.
  */
@@ -486,7 +486,13 @@ static inline std::string join(const Container& tokens, std::string_view delim) 
             result << delim;
         }
 
-        result << *it;
+        // treat Container<int8_t> and Container<uint8_t> as Container<int>
+        using ValueType = std::decay_t<decltype(*it)>;
+        if constexpr (std::is_same_v<ValueType, int8_t> || std::is_same_v<ValueType, uint8_t>) {
+            result << static_cast<int>(*it);
+        } else {
+            result << *it;
+        }
     }
 
     return result.str();

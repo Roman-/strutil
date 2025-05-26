@@ -465,6 +465,10 @@ TEST(Splitting, join_set) {
     EXPECT_EQ(strutil::join(tokens2, "|"), "1|2|3|42");
 }
 
+TEST(Splitting, join_vector_int8_t) {
+    std::vector<int8_t> tokens2 = {1, 2, 3, 42};
+    EXPECT_EQ(strutil::join(tokens2, "|"), "1|2|3|42");
+}
 
 TEST(Splitting, drop_empty) {
     std::vector<std::string> tokens = {"t1", "t2", "", "t4", ""};
