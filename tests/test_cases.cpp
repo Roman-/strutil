@@ -445,6 +445,12 @@ TEST(Regexsplitting_map, regex_split_map) {
         }
     }
 
+    auto no_match = strutil::regex_split_map("abc", "\\[[^\\]]+\\]");
+    EXPECT_TRUE(no_match.empty());
+
+    auto empty_input = strutil::regex_split_map("", "\\[[^\\]]+\\]");
+    EXPECT_TRUE(empty_input.empty());
+
     // TODO: More test is to be added.
 }
 
@@ -458,6 +464,12 @@ TEST(Splitting, join_vector) {
     std::vector<unsigned> tokens2 = {1, 2, 3};
 
     EXPECT_EQ(str2, strutil::join(tokens2, "|"));
+
+    std::vector<std::string> empty_tokens;
+    EXPECT_EQ(strutil::join(empty_tokens, ";"), "");
+
+    std::vector<std::string> tokens3{"a", "b", "c"};
+    EXPECT_EQ(strutil::join(tokens3, ""), "abc");
 }
 
 TEST(Splitting, join_set) {
@@ -495,6 +507,10 @@ TEST(TestDropDuplicate, drop_duplicate) {
     std::vector<std::string> str2 = {"", "t1", "t2", "t4"};
 
     EXPECT_EQ(std::equal(str1.cbegin(), str1.cend(), str2.cbegin()), true);
+
+    std::vector<std::string> empty_tokens;
+    strutil::drop_duplicate(empty_tokens);
+    EXPECT_TRUE(empty_tokens.empty());
 }
 
 TEST(TestDropDuplicateCopy, drop_duplicate_copy) {
@@ -503,6 +519,10 @@ TEST(TestDropDuplicateCopy, drop_duplicate_copy) {
 
     std::vector<std::string> str2 = {"", "t1", "t2", "t4"};
     EXPECT_EQ(std::equal(str2.cbegin(), str2.cend(), str3.cbegin()), true);
+
+    std::vector<std::string> empty_tokens;
+    auto result = strutil::drop_duplicate_copy(empty_tokens);
+    EXPECT_TRUE(result.empty());
 }
 
 /*
@@ -573,6 +593,8 @@ TEST(TextManip, truncate) {
     EXPECT_EQ("hello world", strutil::truncate("hello world", 100));
     EXPECT_EQ("he...", strutil::truncate("hello world", 5));
     EXPECT_EQ("h~", strutil::truncate("hello world", 2, "~"));
+    EXPECT_EQ("", strutil::truncate("hello", 0));
+    EXPECT_EQ("..", strutil::truncate("hello", 2));
 }
 
 TEST(TextManip, replace_first) {
