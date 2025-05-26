@@ -636,6 +636,31 @@ static inline std::string random_lowercase_string(size_t size) {
 }
 
 /**
+ * @brief Truncates the source string so that the result does not exceed
+ *        max_output_string_length characters. If truncation happens, the
+ *        ellipsis string is appended to the truncated substring.
+ * @param source_string - the input string that may need to be truncated.
+ * @param max_output_string_length - maximum length of the returned string.
+ * @param ellipsis - string appended when truncation occurs.
+ * @return Truncated string with optional ellipsis.
+ */
+static inline std::string truncate(std::string_view source_string,
+                                   size_t max_output_string_length,
+                                   std::string_view ellipsis = "...") {
+    if (source_string.size() <= max_output_string_length) {
+        return std::string(source_string);
+    }
+
+    if (max_output_string_length <= ellipsis.size()) {
+        return std::string(ellipsis.substr(0, max_output_string_length));
+    }
+
+    std::string result(source_string.substr(0, max_output_string_length - ellipsis.size()));
+    result.append(ellipsis);
+    return result;
+}
+
+/**
  * @brief converts a byte array to its hexadecimal string representation.
  * @param size - number of chars in string
  */

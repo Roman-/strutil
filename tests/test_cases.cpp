@@ -565,6 +565,12 @@ TEST(TextManip, repeat) {
     EXPECT_EQ("ZZZZZZZZZZ", strutil::repeat('Z', 10));
 }
 
+TEST(TextManip, truncate) {
+    EXPECT_EQ("hello world", strutil::truncate("hello world", 100));
+    EXPECT_EQ("he...", strutil::truncate("hello world", 5));
+    EXPECT_EQ("h~", strutil::truncate("hello world", 2, "~"));
+}
+
 TEST(TextManip, replace_first) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_first(str1, "$name", "Jon Doe");
