@@ -651,7 +651,7 @@ static inline std::string random_lowercase_string(size_t size) {
  * @return Truncated string with optional ellipsis.
  */
 static inline std::string truncate(std::string_view source_string,
-                                   size_t max_output_string_length,
+                                   size_t max_output_string_length = 100,
                                    std::string_view ellipsis = "...") {
     if (source_string.size() <= max_output_string_length) {
         return std::string(source_string);
