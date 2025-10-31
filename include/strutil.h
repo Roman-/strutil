@@ -619,7 +619,7 @@ static inline std::vector<T> reverse_copy(std::vector<T> strs) {
  * @brief Generate string of given size consisting of random alphanumeric characters
  * @param size - number of chars in string
  */
-static inline std::string random_string(size_t size) {
+static inline std::string random_alphanumeric_string(size_t size) {
     static const char symbols[] =
         "0123456789"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

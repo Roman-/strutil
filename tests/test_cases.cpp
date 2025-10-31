@@ -711,8 +711,8 @@ TEST(Random, random_lowercase_string) {
     ASSERT_EQ(strings.end(), std::adjacent_find(strings.begin(), strings.end(), std::equal_to<>()));
 }
 
-TEST(Random, random_string) {
-    ASSERT_TRUE(strutil::random_string(0).empty());
+TEST(Random, random_alphanumeric_string) {
+    ASSERT_TRUE(strutil::random_alphanumeric_string(0).empty());
 
     // generate a bunch of 20-char strings, ensure each of them is 20 characters long, unique and alphanumeric
     const size_t num_strings{50};
@@ -720,7 +720,7 @@ TEST(Random, random_string) {
     std::vector<std::string> strings;
     std::generate_n(std::back_inserter(strings),
                     num_strings,
-                    [&]() { return strutil::random_string(string_size); });
+                    [&]() { return strutil::random_alphanumeric_string(string_size); });
     for (const auto& s : strings) {
         ASSERT_EQ(s.size(), string_size);
         for (const char c : s) {
