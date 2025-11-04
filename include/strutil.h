@@ -667,6 +667,65 @@ static inline std::string truncate(std::string_view source_string,
 }
 
 /**
+ * @brief Produce a sanitized preview of the input string where non-printable
+ *        characters are replaced with escape sequences. The result is then
+ *        truncated using the same rules as strutil::truncate.
+ *
+ * @param source_string - the input string that may contain non-printable
+ *                        characters.
+ * @param max_output_string_length - maximum length of the returned string.
+ * @param ellipsis - string appended when truncation occurs.
+ * @return Sanitized and possibly truncated string.
+ */
+static inline std::string preview(std::string_view source_string,
+                                  size_t max_output_string_length = 100,
+                                  std::string_view ellipsis = "...") {
+    static constexpr char HEX_DIGITS[] = "0123456789ABCDEF";
+
+    std::string sanitized;
+    sanitized.reserve(source_string.size());
+
+    for (unsigned char ch : source_string) {
+        switch (ch) {
+            case '\\':
+                sanitized.append("\\\\");
+                break;
+            case '\n':
+                sanitized.append("\\n");
+                break;
+            case '\r':
+                sanitized.append("\\r");
+                break;
+            case '\t':
+                sanitized.append("\\t");
+                break;
+            case '\0':
+                sanitized.append("\\0");
+                break;
+            case '\b':
+                sanitized.append("\\b");
+                break;
+            case '\f':
+                sanitized.append("\\f");
+                break;
+            case '\v':
+                sanitized.append("\\v");
+                break;
+            default:
+                if (std::isprint(ch)) {
+                    sanitized.push_back(static_cast<char>(ch));
+                } else {
+                    char buffer[4] = {'\\', 'x', HEX_DIGITS[ch >> 4], HEX_DIGITS[ch & 0x0F]};
+                    sanitized.append(buffer, 4);
+                }
+                break;
+        }
+    }
+
+    return truncate(sanitized, max_output_string_length, ellipsis);
+}
+
+/**
  * @brief converts a byte array to its hexadecimal string representation.
  * @param size - number of chars in string
  */

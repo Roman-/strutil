@@ -198,6 +198,27 @@ TEST(Parsing, string_to_u_char) {
     EXPECT_EQ('d', strutil::parse_string<unsigned char>("d"));
 }
 
+TEST(StringPreview, replaces_control_characters) {
+    std::string input = "Line1\nLine2\r\n\tEnd";
+    input.push_back('\x01');
+    EXPECT_EQ("Line1\\nLine2\\r\\n\\tEnd\\x01", strutil::preview(input, 100));
+}
+
+TEST(StringPreview, preserves_printable_characters) {
+    std::string input = "Printable !@#";
+    EXPECT_EQ(input, strutil::preview(input, 100));
+}
+
+TEST(StringPreview, handles_null_character) {
+    const std::string input("A\0B", 3);
+    EXPECT_EQ("A\\0B", strutil::preview(input, 100));
+}
+
+TEST(StringPreview, truncates_after_sanitizing) {
+    std::string input = "abcdef";
+    EXPECT_EQ("ab...", strutil::preview(input, 5));
+}
+
 TEST(Parsing, string_to_float) {
     EXPECT_EQ(5.245f, strutil::parse_string<float>("5.245f"));
 }
