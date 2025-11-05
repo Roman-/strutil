@@ -309,25 +309,29 @@ static inline bool starts_with(std::string_view str, const char prefix) {
 
 /**
  * @brief Splits input std::string str according to input delim.
- * @param str - std::string that will be splitted.
+ * @param s - std::string that will be splitted.
  * @param delim - the delimiter.
  * @return std::vector<std::string> that contains all splitted tokens.
  */
-static inline std::vector<std::string> split(const std::string& str, const char delim) {
-    std::vector<std::string> tokens;
-    std::stringstream ss(str);
+static inline std::vector<std::string> split(const std::string_view& s, const char delim) {
+    std::vector<std::string> out;
 
-    std::string token;
-    while (std::getline(ss, token, delim)) {
-        tokens.emplace_back(std::move(token));
+    // Reserve exactly how many tokens we'll produce: #delims + 1
+    out.reserve(s.empty() ? 1u
+                          : 1u + static_cast<unsigned>(std::count(s.begin(), s.end(), delim)));
+
+    std::size_t start = 0;
+    while(true) {
+        std::size_t pos = s.find(delim, start);
+        if (pos == std::string_view::npos) {
+            // Final segment (possibly empty if s ended with delim or s is empty)
+            out.emplace_back(s.substr(start));
+            break;
+        }
+        out.emplace_back(s.substr(start, pos - start));
+        start = pos + 1;
     }
-
-    // Match semantics of split(str,str)
-    if (str.empty() || ends_with(str, delim)) {
-        tokens.emplace_back();
-    }
-
-    return tokens;
+    return out;
 }
 
 /**
