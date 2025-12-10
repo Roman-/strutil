@@ -10,81 +10,81 @@
 */
 
 TEST(Compare, compare_ignore_case) {
-    EXPECT_EQ(true, strutil::compare_ignore_case("", ""));
-    EXPECT_EQ(false, strutil::compare_ignore_case("", "non-empty string"));
-    EXPECT_EQ(false, strutil::compare_ignore_case("c1", "c2"));
+    EXPECT_TRUE(strutil::compare_ignore_case("", ""));
+    EXPECT_FALSE(strutil::compare_ignore_case("", "non-empty string"));
+    EXPECT_FALSE(strutil::compare_ignore_case("c1", "c2"));
 
     std::string str1 = "PoKeMoN!";
     std::string str2 = "pokemon!";
     std::string str3 = "POKEMON";
 
-    EXPECT_EQ(true, strutil::compare_ignore_case(str1, str2));
-    EXPECT_EQ(false, strutil::compare_ignore_case(str1, str3));
-    EXPECT_EQ(false, strutil::compare_ignore_case(str2, str3));
+    EXPECT_TRUE(strutil::compare_ignore_case(str1, str2));
+    EXPECT_FALSE(strutil::compare_ignore_case(str1, str3));
+    EXPECT_FALSE(strutil::compare_ignore_case(str2, str3));
 }
 
 TEST(Compare, starts_with_str) {
-    EXPECT_EQ(true, strutil::starts_with("m_DiffuseTexture", "m_"));
-    EXPECT_EQ(true, strutil::starts_with("This is a simple test case", "This "));
-    EXPECT_EQ(true, strutil::starts_with("This is a simple test case", "This is a simple test case"));
-    EXPECT_EQ(true, strutil::starts_with("This is a simple test case", ""));
-    EXPECT_EQ(true, strutil::starts_with("", ""));
+    EXPECT_TRUE(strutil::starts_with("m_DiffuseTexture", "m_"));
+    EXPECT_TRUE(strutil::starts_with("This is a simple test case", "This "));
+    EXPECT_TRUE(strutil::starts_with("This is a simple test case", "This is a simple test case"));
+    EXPECT_TRUE(strutil::starts_with("This is a simple test case", ""));
+    EXPECT_TRUE(strutil::starts_with("", ""));
 
-    EXPECT_EQ(false, strutil::starts_with("p_DiffuseTexture", "m_"));
-    EXPECT_EQ(false, strutil::starts_with("This is a simple test case", "his "));
-    EXPECT_EQ(false, strutil::starts_with("abc", "abc_"));
-    EXPECT_EQ(false, strutil::starts_with("abc", "_abc"));
+    EXPECT_FALSE(strutil::starts_with("p_DiffuseTexture", "m_"));
+    EXPECT_FALSE(strutil::starts_with("This is a simple test case", "his "));
+    EXPECT_FALSE(strutil::starts_with("abc", "abc_"));
+    EXPECT_FALSE(strutil::starts_with("abc", "_abc"));
 
-    EXPECT_EQ(false, strutil::starts_with("", "m_"));
+    EXPECT_FALSE(strutil::starts_with("", "m_"));
 }
 
 TEST(Compare, starts_with_char) {
-    EXPECT_EQ(true, strutil::starts_with("m_DiffuseTexture", 'm'));
-    EXPECT_EQ(true, strutil::starts_with("This is a simple test case", 'T'));
+    EXPECT_TRUE(strutil::starts_with("m_DiffuseTexture", 'm'));
+    EXPECT_TRUE(strutil::starts_with("This is a simple test case", 'T'));
 
-    EXPECT_EQ(false, strutil::starts_with("p_DiffuseTexture", 'm'));
-    EXPECT_EQ(false, strutil::starts_with("This is a simple test case", 'h'));
+    EXPECT_FALSE(strutil::starts_with("p_DiffuseTexture", 'm'));
+    EXPECT_FALSE(strutil::starts_with("This is a simple test case", 'h'));
 
-    EXPECT_EQ(false, strutil::starts_with("", 'm'));
+    EXPECT_FALSE(strutil::starts_with("", 'm'));
 }
 
 TEST(Compare, ends_with_str) {
-    EXPECT_EQ(true, strutil::ends_with("DiffuseTexture_m", "_m"));
-    EXPECT_EQ(true, strutil::ends_with("This is a simple test case", " test case"));
-    EXPECT_EQ(true, strutil::ends_with("This is a simple test case", "This is a simple test case"));
-    EXPECT_EQ(true, strutil::ends_with("This is a simple test case", ""));
-    EXPECT_EQ(true, strutil::ends_with("", ""));
+    EXPECT_TRUE(strutil::ends_with("DiffuseTexture_m", "_m"));
+    EXPECT_TRUE(strutil::ends_with("This is a simple test case", " test case"));
+    EXPECT_TRUE(strutil::ends_with("This is a simple test case", "This is a simple test case"));
+    EXPECT_TRUE(strutil::ends_with("This is a simple test case", ""));
+    EXPECT_TRUE(strutil::ends_with("", ""));
 
-    EXPECT_EQ(false, strutil::ends_with("DiffuseTexture_p", "_m"));
-    EXPECT_EQ(false, strutil::ends_with("This is a simple test case", "test cas"));
-    EXPECT_EQ(false, strutil::ends_with("abc", "_abc"));
-    EXPECT_EQ(false, strutil::ends_with("abc", "abc_"));
+    EXPECT_FALSE(strutil::ends_with("DiffuseTexture_p", "_m"));
+    EXPECT_FALSE(strutil::ends_with("This is a simple test case", "test cas"));
+    EXPECT_FALSE(strutil::ends_with("abc", "_abc"));
+    EXPECT_FALSE(strutil::ends_with("abc", "abc_"));
 
-    EXPECT_EQ(false, strutil::ends_with("", "_m"));
+    EXPECT_FALSE(strutil::ends_with("", "_m"));
 }
 
 TEST(Compare, ends_with_char) {
-    EXPECT_EQ(true, strutil::ends_with("DiffuseTexture_m", 'm'));
-    EXPECT_EQ(true, strutil::ends_with("This is a simple test case", 'e'));
+    EXPECT_TRUE(strutil::ends_with("DiffuseTexture_m", 'm'));
+    EXPECT_TRUE(strutil::ends_with("This is a simple test case", 'e'));
 
-    EXPECT_EQ(false, strutil::ends_with("DiffuseTexture_p", 'm'));
-    EXPECT_EQ(false, strutil::ends_with("This is a simple test case", 's'));
+    EXPECT_FALSE(strutil::ends_with("DiffuseTexture_p", 'm'));
+    EXPECT_FALSE(strutil::ends_with("This is a simple test case", 's'));
 
-    EXPECT_EQ(false, strutil::ends_with("", 'm'));
+    EXPECT_FALSE(strutil::ends_with("", 'm'));
 }
 
 TEST(Compare, contains_str) {
-    EXPECT_EQ(true, strutil::contains("DiffuseTexture_m", "fuse"));
-    EXPECT_EQ(true, strutil::contains("", ""));
-    EXPECT_EQ(false, strutil::contains("DiffuseTexture_m", "fuser"));
-    EXPECT_EQ(false, strutil::contains("abc", "abc_"));
-    EXPECT_EQ(false, strutil::contains("", "abc"));
+    EXPECT_TRUE(strutil::contains("DiffuseTexture_m", "fuse"));
+    EXPECT_TRUE(strutil::contains("", ""));
+    EXPECT_FALSE(strutil::contains("DiffuseTexture_m", "fuser"));
+    EXPECT_FALSE(strutil::contains("abc", "abc_"));
+    EXPECT_FALSE(strutil::contains("", "abc"));
 }
 
 TEST(Compare, contains_char) {
-    EXPECT_EQ(true, strutil::contains("DiffuseTexture_m", 'f'));
-    EXPECT_EQ(false, strutil::contains("DiffuseTexture_m", 'z'));
-    EXPECT_EQ(false, strutil::contains("", 'z'));
+    EXPECT_TRUE(strutil::contains("DiffuseTexture_m", 'f'));
+    EXPECT_FALSE(strutil::contains("DiffuseTexture_m", 'z'));
+    EXPECT_FALSE(strutil::contains("", 'z'));
 }
 
 /*
@@ -447,7 +447,7 @@ TEST(TextManip, replace_first) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_first(str1, "$name", "Jon Doe");
 
-    EXPECT_EQ(true, res);
+    EXPECT_TRUE(res);
     EXPECT_EQ("This is Jon Doe and that is also $name.", str1);
 }
 
@@ -455,7 +455,7 @@ TEST(TextManip, no_replace_first) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_first(str1, "$name$", "Jon Doe");
 
-    EXPECT_EQ(false, res);
+    EXPECT_FALSE(res);
     EXPECT_EQ("This is $name and that is also $name.", str1);
 }
 
@@ -463,7 +463,7 @@ TEST(TextManip, replace_last) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_last(str1, "$name", "Jon Doe");
 
-    EXPECT_EQ(true, res);
+    EXPECT_TRUE(res);
     EXPECT_EQ("This is $name and that is also Jon Doe.", str1);
 }
 
@@ -471,7 +471,7 @@ TEST(TextManip, no_replace_last) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_last(str1, "$name$", "Jon Doe");
 
-    EXPECT_EQ(false, res);
+    EXPECT_FALSE(res);
     EXPECT_EQ("This is $name and that is also $name.", str1);
 }
 
@@ -479,7 +479,7 @@ TEST(TextManip, replace_all) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_all(str1, "$name", "Jon Doe");
 
-    EXPECT_EQ(true, res);
+    EXPECT_TRUE(res);
     EXPECT_EQ("This is Jon Doe and that is also Jon Doe.", str1);
 }
 
@@ -487,7 +487,7 @@ TEST(TextManip, no_replace_all) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_last(str1, "$name$", "Jon Doe");
 
-    EXPECT_EQ(false, res);
+    EXPECT_FALSE(res);
     EXPECT_EQ("This is $name and that is also $name.", str1);
 }
 
@@ -495,7 +495,7 @@ TEST(TextManip, replace_all_target_empty) {
     std::string str1 = "This is $name and that is also $name.";
     bool res = strutil::replace_all(str1, "", "Jon Doe");
 
-    EXPECT_EQ(false, res);
+    EXPECT_FALSE(res);
     EXPECT_EQ("This is $name and that is also $name.", str1);
 }
 
