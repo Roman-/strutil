@@ -18,6 +18,7 @@
 #include <regex>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <map>
 #include <iomanip>
@@ -56,11 +57,11 @@ static inline T parse_string(const std::string& str) {
 
 /**
  * @brief Converts std::string to lower case.
- * @param str - std::string that needs to be converted.
+ * @param str - string that needs to be converted.
  * @return Lower case input std::string.
  */
-static inline std::string to_lower(const std::string& str) {
-    auto result = str;
+static inline std::string to_lower(std::string_view str) {
+    std::string result{str};
     std::transform(result.begin(), result.end(), result.begin(), [](char c) {
         return static_cast<char>(std::tolower(c));
     });
@@ -70,11 +71,11 @@ static inline std::string to_lower(const std::string& str) {
 
 /**
  * @brief Converts std::string to upper case.
- * @param str - std::string that needs to be converted.
+ * @param str - string that needs to be converted.
  * @return Upper case input std::string.
  */
-static inline std::string to_upper(const std::string& str) {
-    auto result = str;
+static inline std::string to_upper(std::string_view str) {
+    std::string result{str};
     std::transform(result.begin(), result.end(), result.begin(), [](char c) {
         return static_cast<char>(std::toupper(c));
     });
@@ -87,8 +88,8 @@ static inline std::string to_upper(const std::string& str) {
  * @param str - input string to be capitalized.
  * @return A string with the first letter capitalized and all other characters lowercased. It doesn't modify the input string.
  */
-static inline std::string capitalize(const std::string& str) {
-    auto result = str;
+static inline std::string capitalize(std::string_view str) {
+    std::string result{str};
     if (!result.empty()) {
         result.front() = static_cast<char>(std::toupper(result.front()));
     }
@@ -271,7 +272,7 @@ static inline bool replace_all(std::string& str, const std::string& target, cons
  * @param suffix - searched suffix in str.
  * @return True if suffix was found, false otherwise.
  */
-static inline bool ends_with(std::string_view str, const std::string& suffix) {
+static inline bool ends_with(std::string_view str, std::string_view suffix) {
     const auto suffix_start = str.size() - suffix.size();
     const auto result = str.find(suffix, suffix_start);
     return (result == suffix_start) && (result != std::string::npos);
@@ -308,12 +309,12 @@ static inline bool starts_with(std::string_view str, const char prefix) {
 }
 
 /**
- * @brief Splits input std::string str according to input delim.
- * @param s - std::string that will be splitted.
+ * @brief Splits input string according to input character delimiter.
+ * @param s - string that will be splitted.
  * @param delim - the delimiter.
  * @return std::vector<std::string> that contains all splitted tokens.
  */
-static inline std::vector<std::string> split(const std::string_view& s, const char delim) {
+static inline std::vector<std::string> split(std::string_view s, const char delim) {
     std::vector<std::string> out;
 
     // Reserve exactly how many tokens we'll produce: #delims + 1
@@ -335,14 +336,14 @@ static inline std::vector<std::string> split(const std::string_view& s, const ch
 }
 
 /**
- * @brief Splits input std::string str according to input std::string delim.
+ * @brief Splits input string according to input delimiter substring.
  *        Taken from: https://stackoverflow.com/a/46931770/1892346.
- * @param str - std::string that will be split.
+ * @param str - string that will be split.
  * @param delim - the delimiter.
  * @return std::vector<std::string> that contains all splitted tokens.
  */
-static inline std::vector<std::string> split(const std::string& str, const std::string& delim) {
-    size_t pos_start = 0, pos_end, delim_len = delim.length();
+static inline std::vector<std::string> split(std::string_view str, std::string_view delim) {
+    size_t pos_start = 0, pos_end, delim_len = delim.size();
     std::string token;
     std::vector<std::string> tokens;
 
@@ -358,10 +359,10 @@ static inline std::vector<std::string> split(const std::string& str, const std::
 
 /**
  * @brief Splits input string into lines separated by "\n" or "\r\n".
- * @param str - std::string that will be split.
+ * @param str - string that will be split.
  * @return std::vector<std::string> that contains the lines.
  */
-static inline std::vector<std::string> split_lines(const std::string& str) {
+static inline std::vector<std::string> split_lines(std::string_view str) {
     std::vector<std::string> tokens = split(str, '\n');
     for (auto& token : tokens) {
         if (!token.empty() && token.back() == '\r') {
@@ -374,12 +375,12 @@ static inline std::vector<std::string> split_lines(const std::string& str) {
 
 /**
  * @brief Splits input string into lines separated by "\n" or "\r\n", trims them and removes empty lines.
- * @param str - std::string that will be split.
+ * @param str - string that will be split.
  * @return std::vector<std::string> that contains trimmed non-empty lines.
  */
-static inline std::vector<std::string> split_lines_clean(const std::string& str) {
+static inline std::vector<std::string> split_lines_clean(std::string_view str) {
     std::vector<std::string> tokens;
-    std::stringstream ss(str);
+    std::stringstream ss{std::string(str)};
 
     std::string token;
     while (std::getline(ss, token)) {
@@ -422,7 +423,6 @@ static inline std::vector<std::string> regex_split(const std::string& src, const
     std::sregex_token_iterator end;
     while (iter != end) {
         elems.push_back(*iter);
-        ++iter;
     }
     return elems;
 }
@@ -453,11 +453,11 @@ static inline std::map<std::string, std::string> regex_split_map(const std::stri
 
 /**
  * @brief Splits input string using any delimiter in the given set.
- * @param str - std::string that will be split.
+ * @param str - string that will be split.
  * @param delims - the set of delimiter characters.
  * @return vector of resulting tokens.
  */
-static inline std::vector<std::string> split_any(const std::string& str, const std::string& delims) {
+static inline std::vector<std::string> split_any(std::string_view str, std::string_view delims) {
     std::string token;
     std::vector<std::string> tokens;
 
@@ -470,7 +470,7 @@ static inline std::vector<std::string> split_any(const std::string& str, const s
         }
     }
 
-    tokens.push_back(str.substr(pos_start));
+    tokens.emplace_back(str.substr(pos_start));
     return tokens;
 }
 
@@ -573,13 +573,13 @@ static inline std::string repeat(char c, unsigned n) {
 }
 
 /**
- * @brief Checks if input std::string str matches specified reular expression regex.
- * @param str - std::string to be checked.
+ * @brief Checks if input string matches specified regular expression regex.
+ * @param str - string to be checked.
  * @param regex - the std::regex regular expression.
  * @return True if regex matches str, false otherwise.
  */
-static inline bool matches(const std::string& str, const std::regex& regex) {
-    return std::regex_match(str, regex);
+static inline bool matches(std::string_view str, const std::regex& regex) {
+    return std::regex_match(str.begin(), str.end(), regex);
 }
 
 /**
@@ -763,7 +763,7 @@ static inline std::string to_binary_string(const uint8_t* data, size_t size) {
 /**
  * @returns true if string does not contain characters other than latin letters, both uppercase and lowercase, and digits
  */
-static inline bool is_alphanumeric(const std::string& s) {
+static inline bool is_alphanumeric(std::string_view s) {
     return std::all_of(s.begin(), s.end(), [](char c) { return bool(std::isalnum(c)); });
 }
 
