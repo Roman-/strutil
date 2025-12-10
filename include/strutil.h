@@ -20,6 +20,8 @@
 #include <string_view>
 #include <vector>
 #include <iomanip>
+#include <type_traits>
+#include <utility>
 
 //! The strutil namespace
 namespace strutil {
@@ -407,6 +409,30 @@ static std::string join(const Container& tokens, std::string_view delim) {
         } else {
             result << *it;
         }
+    }
+
+    return result.str();
+}
+
+/**
+ * @brief Joins all elements of a container of streamable objects into one std::string with delimiter delim.
+ * @tparam Container - type of iterable container whose value type supports operator<<(std::ostream&, Value).
+ * @param tokens - container of values to join.
+ * @param delim - delimiter inserted between values.
+ * @return std::string with joined elements of container tokens with delimiter delim.
+ */
+template<typename Container>
+static std::string join_objects(const Container& tokens, std::string_view delim) {
+    using ValueType = std::decay_t<decltype(*std::begin(tokens))>;
+    static_assert(std::is_convertible_v<decltype(std::declval<std::ostream&>() << std::declval<ValueType>()), std::ostream&>,
+                  "join_objects requires values stream-insertable into std::ostream");
+
+    std::ostringstream result;
+    for (auto it = tokens.begin(); it != tokens.end(); ++it) {
+        if (it != tokens.begin()) {
+            result << delim;
+        }
+        result << *it;
     }
 
     return result.str();

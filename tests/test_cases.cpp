@@ -4,10 +4,21 @@
 
 #include <gtest/gtest.h>
 #include <include/strutil.h>
+#include <ostream>
 
 /*
 * Comparison tests
 */
+namespace {
+struct JoinPoint {
+    int x;
+    int y;
+};
+
+std::ostream& operator<<(std::ostream& os, const JoinPoint& p) {
+    return os << p.x << "," << p.y;
+}
+} // namespace
 
 TEST(Compare, compare_ignore_case) {
     EXPECT_TRUE(strutil::compare_ignore_case("", ""));
@@ -357,6 +368,23 @@ TEST(Splitting, join_set) {
 TEST(Splitting, join_vector_int8_t) {
     std::vector<int8_t> tokens2 = {1, 2, 3, 42};
     EXPECT_EQ(strutil::join(tokens2, "|"), "1|2|3|42");
+}
+
+TEST(Splitting, join_objects) {
+    std::vector<JoinPoint> points = {{1, 2}, {3, 4}, {5, 6}};
+    EXPECT_EQ(strutil::join_objects(points, " | "), "1,2 | 3,4 | 5,6");
+
+    std::vector<JoinPoint> empty_points;
+    EXPECT_EQ(strutil::join_objects(empty_points, ","), "");
+
+    // Ensure operator<< was used (compare against manual render)
+    std::vector<std::string> rendered;
+    std::transform(points.begin(), points.end(), std::back_inserter(rendered), [](const JoinPoint& p) {
+        std::ostringstream os;
+        os << p;
+        return os.str();
+    });
+    EXPECT_EQ(strutil::join(rendered, " | "), strutil::join_objects(points, " | "));
 }
 
 TEST(Splitting, drop_empty) {
