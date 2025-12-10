@@ -15,12 +15,10 @@
 
 #include <algorithm>
 #include <cctype>
-#include <regex>
 #include <sstream>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <map>
 #include <iomanip>
 
 //! The strutil namespace
@@ -40,22 +38,7 @@ static inline std::string to_string(T value) {
     return ss.str();
 }
 
-/**
- * @brief Converts std::string into any datatype.
- *        Datatype must support << operator.
- * @tparam T
- * @param str - std::string that will be converted into datatype T.
- * @return Variable of datatype T.
- */
-template<typename T>
-static inline T parse_string(const std::string& str) {
-    T result;
-    std::istringstream(str) >> result;
-
-    return result;
-}
-
-/**
+/** 
  * @brief Converts std::string to lower case.
  * @param str - string that needs to be converted.
  * @return Lower case input std::string.
@@ -102,21 +85,6 @@ static inline std::string capitalize(std::string_view str) {
  * @param str - input string to be modified.
  * @return A string with the first letter capitalized. All other characters stay unchanged. It doesn't modify the input string.
  */
-static inline std::string capitalize_first_char(const std::string& str) {
-    auto result = to_lower(str);
-    if (!result.empty()) {
-        result.front() = static_cast<char>(std::toupper(result.front()));
-    }
-
-    return result;
-}
-
-/**
- * @brief Checks if input string contains specified substring.
- * @param str - std::string_view to be checked.
- * @param substring - searched substring.
- * @return True if substring was found in str, false otherwise.
- */
 static inline bool contains(std::string_view str, std::string_view substring) {
     return str.find(substring) != std::string::npos;
 }
@@ -132,12 +100,12 @@ static inline bool contains(std::string_view str, const char character) {
 }
 
 /**
- * @brief Compares two std::strings ignoring their case (lower/upper).
- * @param str1 - std::string to compare
- * @param str2 - std::string to compare
+ * @brief Compares two strings ignoring their case (lower/upper).
+ * @param str1 - string to compare
+ * @param str2 - string to compare
  * @return True if str1 and str2 are equal, false otherwise.
  */
-static inline bool compare_ignore_case(const std::string& str1, const std::string& str2) {
+static inline bool compare_ignore_case(std::string_view str1, std::string_view str2) {
     return str1.size() == str2.size()
            && std::equal(str1.begin(),
                          str1.end(),
@@ -394,64 +362,6 @@ static inline std::vector<std::string> split_lines_clean(std::string_view str) {
 }
 
 /**
- * @brief Splits input string by whitespace(s) into non-empty substrings.
- * @param str - std::string that will be split.
- * @return std::vector<std::string> that contains all splitted tokens.
- */
-static inline std::vector<std::string> split_words(const std::string& str) {
-    std::vector<std::string> tokens;
-    std::stringstream ss(str);
-
-    std::string token;
-    while (ss >> token) {
-        tokens.emplace_back(std::move(token));
-    }
-
-    return tokens;
-}
-
-/**
- * @brief Splits input string using regex as a delimiter.
- * @param src - std::string that will be split.
- * @param rgx_str - the set of delimiter characters.
- * @return vector of resulting tokens.
- */
-static inline std::vector<std::string> regex_split(const std::string& src, const std::string& rgx_str) {
-    std::vector<std::string> elems;
-    std::regex rgx(rgx_str);
-    std::sregex_token_iterator iter(src.begin(), src.end(), rgx, -1);
-    std::sregex_token_iterator end;
-    while (iter != end) {
-        elems.push_back(*iter);
-    }
-    return elems;
-}
-
-/**
- * @brief Splits input string using regex as a delimiter.
- * @param src - std::string that will be split.
- * @param dest - map of matched delimiter and those being splitted.
- * @param rgx_str - the set of delimiter characters.
- * @return True if the parsing is successfully done.
- */
-static inline std::map<std::string, std::string> regex_split_map(const std::string& src, const std::string& rgx_str) {
-    std::map<std::string, std::string> dest;
-    std::string tstr = src + " ";
-    std::regex rgx(rgx_str);
-    std::sregex_token_iterator niter(tstr.begin(), tstr.end(), rgx);
-    std::sregex_token_iterator viter(tstr.begin(), tstr.end(), rgx, -1);
-    std::sregex_token_iterator end;
-    ++viter;
-    while (niter != end) {
-        dest[*niter] = *viter;
-        ++niter;
-        ++viter;
-    }
-
-    return dest;
-}
-
-/**
  * @brief Splits input string using any delimiter in the given set.
  * @param str - string that will be split.
  * @param delims - the set of delimiter characters.
@@ -521,32 +431,7 @@ static inline std::vector<std::string> drop_empty_copy(std::vector<std::string> 
     return tokens;
 }
 
-/**
- * @brief Inplace removal of all duplicate strings in a vector<string> where order is not to be maintained
- *        Taken from: C++ Primer V5
- * @param tokens - vector of strings.
- * @return vector of non-duplicate tokens.
- */
-static inline void drop_duplicate(std::vector<std::string>& tokens) {
-    std::sort(tokens.begin(), tokens.end());
-    auto end_unique = std::unique(tokens.begin(), tokens.end());
-    tokens.erase(end_unique, tokens.end());
-}
-
-/**
- * @brief Removal of all duplicate strings in a vector<string> where order is not to be maintained
- *        Taken from: C++ Primer V5
- * @param tokens - vector of strings.
- * @return vector of non-duplicate tokens.
- */
-static inline std::vector<std::string> drop_duplicate_copy(std::vector<std::string> tokens) {
-    std::sort(tokens.begin(), tokens.end());
-    auto end_unique = std::unique(tokens.begin(), tokens.end());
-    tokens.erase(end_unique, tokens.end());
-    return tokens;
-}
-
-/**
+/** 
  * @brief Creates new std::string with repeated n times substring str.
  * @param str - substring that needs to be repeated.
  * @param n - number of iterations.
@@ -570,16 +455,6 @@ static inline std::string repeat(std::string_view str, unsigned n) {
  */
 static inline std::string repeat(char c, unsigned n) {
     return std::string(n, c);
-}
-
-/**
- * @brief Checks if input string matches specified regular expression regex.
- * @param str - string to be checked.
- * @param regex - the std::regex regular expression.
- * @return True if regex matches str, false otherwise.
- */
-static inline bool matches(std::string_view str, const std::regex& regex) {
-    return std::regex_match(str.begin(), str.end(), regex);
 }
 
 /**

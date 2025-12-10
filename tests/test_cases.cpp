@@ -87,13 +87,6 @@ TEST(Compare, contains_char) {
     EXPECT_EQ(false, strutil::contains("", 'z'));
 }
 
-TEST(Compare, matches) {
-    const std::regex check_mail("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
-
-    EXPECT_EQ(true, strutil::matches("jon.doe@somehost.com", check_mail));
-    EXPECT_EQ(false, strutil::matches("jon.doe@", check_mail));
-}
-
 /*
  * Parsing tests
  */
@@ -158,45 +151,6 @@ TEST(Parsing, neg_bool_to_string) {
     EXPECT_EQ("0", strutil::to_string<bool>(false));
 }
 
-TEST(Parsing, string_to_short_int) {
-    EXPECT_EQ(-255, strutil::parse_string<short int>("-255"));
-}
-
-TEST(Parsing, string_to_u_short_int) {
-    EXPECT_EQ(255, strutil::parse_string<unsigned short int>("255"));
-}
-
-TEST(Parsing, string_to_int) {
-    EXPECT_EQ(-255, strutil::parse_string<int>("-255"));
-}
-
-TEST(Parsing, string_to_u_int) {
-    EXPECT_EQ(255, strutil::parse_string<unsigned int>("255"));
-}
-
-TEST(Parsing, string_to_long_int) {
-    EXPECT_EQ(-255, strutil::parse_string<long int>("-255"));
-}
-
-TEST(Parsing, string_to_u_long_int) {
-    EXPECT_EQ(255, strutil::parse_string<unsigned long int>("255"));
-}
-
-TEST(Parsing, string_to_long_long_int) {
-    EXPECT_EQ(-255, strutil::parse_string<long long int>("-255"));
-}
-
-TEST(Parsing, string_to_u_long_long_int) {
-    EXPECT_EQ(255, strutil::parse_string<unsigned long long int>("255"));
-}
-
-TEST(Parsing, string_to_char) {
-    EXPECT_EQ('d', strutil::parse_string<char>("d"));
-}
-
-TEST(Parsing, string_to_u_char) {
-    EXPECT_EQ('d', strutil::parse_string<unsigned char>("d"));
-}
 
 TEST(StringPreview, replaces_control_characters) {
     std::string input = "Line1\nLine2\r\n\tEnd";
@@ -217,26 +171,6 @@ TEST(StringPreview, handles_null_character) {
 TEST(StringPreview, truncates_after_sanitizing) {
     std::string input = "abcdef";
     EXPECT_EQ("ab...", strutil::preview(input, 5));
-}
-
-TEST(Parsing, string_to_float) {
-    EXPECT_EQ(5.245f, strutil::parse_string<float>("5.245f"));
-}
-
-TEST(Parsing, string_to_double) {
-    EXPECT_EQ(5.245, strutil::parse_string<double>("5.245"));
-}
-
-TEST(Parsing, string_to_long_double) {
-    EXPECT_EQ(-5.245L, strutil::parse_string<long double>("-5.245"));
-}
-
-TEST(Parsing, string_to_bool) {
-    EXPECT_EQ(true, strutil::parse_string<bool>("1"));
-}
-
-TEST(Parsing, string_to_neg_bool) {
-    EXPECT_EQ(false, strutil::parse_string<bool>("0"));
 }
 
 /*
@@ -352,20 +286,6 @@ TEST(Splitting, split_lines_clean) {
     }
 }
 
-TEST(Splitting, split_words) {
-    const std::vector<std::pair<std::string, std::vector<std::string>>> test_cases = {
-        {"1abc",                             {"1abc"}},
-        {" 2abc def  ghi   j",               {"2abc", "def", "ghi", "j"}},
-        {"\r\n\r\n   3abc def\tghi\r\n\r\n", {"3abc", "def", "ghi"}},
-        {" 4abc\r\n def   ghi\rj\n",         {"4abc", "def", "ghi", "j"}},
-        {"",                                 {}}, // no words -> empty array
-    };
-    for (const auto& t : test_cases) {
-        auto result = strutil::split_words(t.first);
-        EXPECT_EQ(result, t.second) << t.first;
-    }
-}
-
 
 TEST(Splitting, split_any) {
     std::vector<std::string> res;
@@ -409,70 +329,6 @@ TEST(Splitting, split_any) {
     EXPECT_EQ(res[0], "abc");
     EXPECT_EQ(res[1], "");
     EXPECT_EQ(res[2], "123");
-}
-
-TEST(Regexsplitting, regex_split) {
-    std::vector<std::string> res;
-
-    // Basic usage
-    res = strutil::regex_split("abc,abcd;abce.abcf?", "[,;\\.\\?]+");
-
-    ASSERT_EQ(res.size(), 4);
-    EXPECT_EQ(res[0], "abc");
-    EXPECT_EQ(res[1], "abcd");
-    EXPECT_EQ(res[2], "abce");
-    EXPECT_EQ(res[3], "abcf");
-
-    // Empty input => empty string
-    ASSERT_EQ(strutil::regex_split("", ",:")[0], "");
-
-    // No matches => original string
-    res = strutil::regex_split("abc_123", ",; ");
-    ASSERT_EQ(res.size(), 1);
-    EXPECT_EQ(res[0], "abc_123");
-
-    // Empty delimiters => original string
-    res = strutil::regex_split("abc;def", "");
-    ASSERT_EQ(res.size(), 8);
-    EXPECT_EQ(res[0], "");
-    EXPECT_EQ(res[1], "a");
-    EXPECT_EQ(res[2], "b");
-    EXPECT_EQ(res[3], "c");
-    EXPECT_EQ(res[4], ";");
-    EXPECT_EQ(res[5], "d");
-    EXPECT_EQ(res[6], "e");
-    EXPECT_EQ(res[7], "f");
-
-    // Leading delimiters => leading empty string
-    res = strutil::regex_split(";abc", ",; ");
-    ASSERT_EQ(res.size(), 1);
-    ASSERT_EQ(res[0], ";abc");
-}
-
-TEST(Regexsplitting_map, regex_split_map) {
-    std::map<std::string, std::string> res = strutil::regex_split_map(
-        "[abc] name = 123; [abd] name = 123;[abe] name = 123;  ", "\\[[^\\]]+\\]");
-    std::map<std::string, std::string> ans = {
-        {"[abc]", "name = 123;"},
-        {"[abd]", "name = 123;"},
-        {"[abe]", "name = 123;"}
-    };
-    for (const auto& each : res) {
-        ASSERT_EQ(ans.count(each.first), 1);
-        if (ans.count(each.first) == 1) {
-            auto str = each.second;
-            strutil::trim(str);
-            ASSERT_EQ(str, ans[each.first]);
-        }
-    }
-
-    auto no_match = strutil::regex_split_map("abc", "\\[[^\\]]+\\]");
-    EXPECT_TRUE(no_match.empty());
-
-    auto empty_input = strutil::regex_split_map("", "\\[[^\\]]+\\]");
-    EXPECT_TRUE(empty_input.empty());
-
-    // TODO: More test is to be added.
 }
 
 TEST(Splitting, join_vector) {
@@ -521,31 +377,6 @@ TEST(Splitting, drop_empty_copy) {
     ASSERT_EQ(res[2], "t4");
 }
 
-TEST(TestDropDuplicate, drop_duplicate) {
-    std::vector<std::string> str1 = {"t1", "t2", "", "t4", "", "t1"};
-    strutil::drop_duplicate(str1);
-
-    std::vector<std::string> str2 = {"", "t1", "t2", "t4"};
-
-    EXPECT_EQ(std::equal(str1.cbegin(), str1.cend(), str2.cbegin()), true);
-
-    std::vector<std::string> empty_tokens;
-    strutil::drop_duplicate(empty_tokens);
-    EXPECT_TRUE(empty_tokens.empty());
-}
-
-TEST(TestDropDuplicateCopy, drop_duplicate_copy) {
-    std::vector<std::string> str1 = {"t1", "t2", "", "t4", "", "t1"};
-    auto str3 = strutil::drop_duplicate_copy(str1);
-
-    std::vector<std::string> str2 = {"", "t1", "t2", "t4"};
-    EXPECT_EQ(std::equal(str2.cbegin(), str2.cend(), str3.cbegin()), true);
-
-    std::vector<std::string> empty_tokens;
-    auto result = strutil::drop_duplicate_copy(empty_tokens);
-    EXPECT_TRUE(result.empty());
-}
-
 /*
  * Text manipulation tests
  */
@@ -564,12 +395,6 @@ TEST(TextManip, capitalize) {
     EXPECT_EQ("HeLlo StRUTIL", strutil::capitalize("heLlo StRUTIL"));
     EXPECT_EQ("+ is an operator.", strutil::capitalize("+ is an operator."));
     EXPECT_EQ("", strutil::capitalize(""));
-}
-
-TEST(TextManip, capitalize_first_char) {
-    EXPECT_EQ("Hello strutil", strutil::capitalize_first_char("HeLlo StRUTIL"));
-    EXPECT_EQ("+ is an operator.", strutil::capitalize_first_char("+ is an operator."));
-    EXPECT_EQ("", strutil::capitalize_first_char(""));
 }
 
 TEST(TextManip, trim_left_in_place) {
