@@ -177,6 +177,21 @@ static std::string trim_copy(std::string str) {
 }
 
 /**
+ * @brief Returns a std::string_view with whitespace removed from both ends without copying.
+ * @param view input view to trim.
+ * @return View with leading and trailing whitespace removed.
+ */
+static std::string_view trim_view(std::string_view view) {
+    while (!view.empty() && std::isspace(static_cast<unsigned char>(view.front()))) {
+        view.remove_prefix(1);
+    }
+    while (!view.empty() && std::isspace(static_cast<unsigned char>(view.back()))) {
+        view.remove_suffix(1);
+    }
+    return view;
+}
+
+/**
  * @brief Replaces (in-place) the first occurance of target with replacement.
  *        Taken from: http://stackoverflow.com/questions/3418231/c-replace-part-of-a-string-with-another-string.
  * @param str - input std::string that will be modified.

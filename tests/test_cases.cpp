@@ -458,6 +458,21 @@ TEST(TextManip, trim_both) {
     EXPECT_EQ("HeLlo StRUTIL", strutil::trim_copy("    HeLlo StRUTIL      "));
 }
 
+TEST(TextManip, trim_view_basic) {
+    const std::string input = " \tabc\t ";
+    const auto view = strutil::trim_view(input);
+    EXPECT_EQ(view, "abc");
+    EXPECT_EQ(view.data(), input.data() + 2);
+    EXPECT_EQ(view.size(), 3U);
+}
+
+TEST(TextManip, trim_view_all_whitespace) {
+    const std::string input = " \t \n";
+    const auto view = strutil::trim_view(input);
+    EXPECT_TRUE(view.empty());
+    EXPECT_EQ(view.data(), input.data() + input.size());
+}
+
 TEST(TextManip, repeat) {
     EXPECT_EQ("GoGoGoGo", strutil::repeat("Go", 4));
     EXPECT_EQ("ZZZZZZZZZZ", strutil::repeat('Z', 10));
