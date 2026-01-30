@@ -675,3 +675,102 @@ TEST(Checks, is_alphanumeric_negative) {
         ASSERT_FALSE(strutil::is_alphanumeric(s)) << s;
     }
 }
+
+TEST(Checks, has_leading_whitespace) {
+    // Empty string
+    EXPECT_FALSE(strutil::has_leading_whitespace(""));
+
+    // Starting with space
+    EXPECT_TRUE(strutil::has_leading_whitespace(" hello"));
+
+    // Starting with tab
+    EXPECT_TRUE(strutil::has_leading_whitespace("\thello"));
+
+    // Starting with newline
+    EXPECT_TRUE(strutil::has_leading_whitespace("\nhello"));
+
+    // Starting with carriage return
+    EXPECT_TRUE(strutil::has_leading_whitespace("\rhello"));
+
+    // Starting with letter
+    EXPECT_FALSE(strutil::has_leading_whitespace("hello"));
+
+    // Whitespace-only string
+    EXPECT_TRUE(strutil::has_leading_whitespace("   "));
+
+    // Trailing whitespace only
+    EXPECT_FALSE(strutil::has_leading_whitespace("hello "));
+}
+
+TEST(Checks, has_trailing_whitespace) {
+    // Empty string
+    EXPECT_FALSE(strutil::has_trailing_whitespace(""));
+
+    // Ending with space
+    EXPECT_TRUE(strutil::has_trailing_whitespace("hello "));
+
+    // Ending with tab
+    EXPECT_TRUE(strutil::has_trailing_whitespace("hello\t"));
+
+    // Ending with newline
+    EXPECT_TRUE(strutil::has_trailing_whitespace("hello\n"));
+
+    // Ending with carriage return
+    EXPECT_TRUE(strutil::has_trailing_whitespace("hello\r"));
+
+    // Ending with letter
+    EXPECT_FALSE(strutil::has_trailing_whitespace("hello"));
+
+    // Whitespace-only string
+    EXPECT_TRUE(strutil::has_trailing_whitespace("   "));
+
+    // Leading whitespace only
+    EXPECT_FALSE(strutil::has_trailing_whitespace(" hello"));
+}
+
+TEST(Checks, find_first_control_char_index) {
+    // Empty string
+    EXPECT_EQ(strutil::find_first_control_char_index(""), std::string_view::npos);
+
+    // No control characters
+    EXPECT_EQ(strutil::find_first_control_char_index("hello world!"), std::string_view::npos);
+
+    // Contains null character at index 1
+    EXPECT_EQ(strutil::find_first_control_char_index(std::string_view("a\0b", 3)), 1u);
+
+    // Contains tab at index 1
+    EXPECT_EQ(strutil::find_first_control_char_index("a\tb"), 1u);
+
+    // Contains newline at index 1
+    EXPECT_EQ(strutil::find_first_control_char_index("a\nb"), 1u);
+
+    // Control char at start
+    EXPECT_EQ(strutil::find_first_control_char_index("\x01" "abc"), 0u);
+
+    // Control char at end
+    EXPECT_EQ(strutil::find_first_control_char_index("abc\x01"), 3u);
+}
+
+TEST(Checks, has_characters) {
+    // Empty string, any chars
+    EXPECT_FALSE(strutil::has_characters("", {'a', 'b', 'c'}));
+
+    // String with char from list
+    EXPECT_TRUE(strutil::has_characters("hello", {'e', 'x', 'y'}));
+
+    // String without chars from list
+    EXPECT_FALSE(strutil::has_characters("hello", {'x', 'y', 'z'}));
+
+    // Empty initializer list
+    EXPECT_FALSE(strutil::has_characters("hello", {}));
+
+    // Multiple matching chars
+    EXPECT_TRUE(strutil::has_characters("hello", {'h', 'e', 'l', 'o'}));
+
+    // Single char in string matches
+    EXPECT_TRUE(strutil::has_characters("a", {'a'}));
+
+    // Special characters
+    EXPECT_TRUE(strutil::has_characters("hello/world", {'/', '\\'}));
+    EXPECT_FALSE(strutil::has_characters("hello-world", {'/', '\\'}));
+}

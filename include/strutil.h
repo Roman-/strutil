@@ -15,13 +15,14 @@
 
 #include <algorithm>
 #include <cctype>
+#include <initializer_list>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <string_view>
-#include <vector>
-#include <iomanip>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 //! The strutil namespace
 namespace strutil {
@@ -116,6 +117,46 @@ static bool compare_ignore_case(std::string_view str1, std::string_view str2) {
 }
 
 /**
+ * @brief Checks if string has leading whitespace.
+ * @param s - input string view to check.
+ * @return True if string is non-empty and starts with whitespace, false otherwise.
+ */
+static bool has_leading_whitespace(std::string_view s) {
+    return !s.empty() && std::isspace(static_cast<unsigned char>(s.front()));
+}
+
+/**
+ * @brief Checks if string has trailing whitespace.
+ * @param s - input string view to check.
+ * @return True if string is non-empty and ends with whitespace, false otherwise.
+ */
+static bool has_trailing_whitespace(std::string_view s) {
+    return !s.empty() && std::isspace(static_cast<unsigned char>(s.back()));
+}
+
+/**
+ * @brief Finds the first control character in a string.
+ * @param s - input string view to scan.
+ * @return Index of the first control character, or std::string_view::npos if none found.
+ */
+static size_t find_first_control_char_index(std::string_view s) {
+    auto it = std::find_if(s.begin(), s.end(), [](char c) {
+        return std::iscntrl(static_cast<unsigned char>(c));
+    });
+    return it == s.end() ? std::string_view::npos : static_cast<size_t>(it - s.begin());
+}
+
+/**
+ * @brief Checks if string contains any of the specified characters.
+ * @param s - input string view to check.
+ * @param chars - list of characters to search for.
+ * @return True if any character from the list is found in the string, false otherwise.
+ */
+static bool has_characters(std::string_view s, std::initializer_list<char> chars) {
+    return std::find_first_of(s.begin(), s.end(), chars.begin(), chars.end()) != s.end();
+}
+
+/**
  * @brief Trims (in-place) white spaces from the left side of std::string.
  *        Taken from: http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring.
  * @param str - input std::string to remove white spaces from.
@@ -182,10 +223,10 @@ static std::string trim_copy(std::string str) {
  * @return View with leading and trailing whitespace removed.
  */
 static std::string_view trim_view(std::string_view view) {
-    while (!view.empty() && std::isspace(static_cast<unsigned char>(view.front()))) {
+    while (has_leading_whitespace(view)) {
         view.remove_prefix(1);
     }
-    while (!view.empty() && std::isspace(static_cast<unsigned char>(view.back()))) {
+    while (has_trailing_whitespace(view)) {
         view.remove_suffix(1);
     }
     return view;
